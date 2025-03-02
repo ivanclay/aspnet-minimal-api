@@ -24,7 +24,7 @@ public static class RangosHandlers
         return TypedResults.Ok(mapper.Map<IEnumerable<RangoDTO>>(rangoEntity));
     }
 
-    public static async Task<CreatedAtRoute<RangoDTO>> PostRangoAsync(
+    public static async Task<CreatedAtRoute<RangoDTO>> CreateRangoAsync(
     RangoDbContext context,
     IMapper mapper,
     [FromBody] RangoCreateDTO rangoCreateDTO)
@@ -37,7 +37,7 @@ public static class RangosHandlers
 
         return TypedResults.CreatedAtRoute(
                                 rangoReturn,
-                                "GetRangosById",
+                                "GetRangoById",
                                 new
                                 {
                                     rangoId = rangoReturn.Id
@@ -52,7 +52,7 @@ public static class RangosHandlers
         return mapper.Map<RangoDTO>(await context.Rangos.FirstOrDefaultAsync(rango => rango.Id == RangoId));
     }
 
-    public static async Task<Results<NotFound, Ok>> PutRangoAsync(
+    public static async Task<Results<NotFound, Ok>> UpdateRangoAsync(
     RangoDbContext context,
     IMapper mapper,
     int rangoId,

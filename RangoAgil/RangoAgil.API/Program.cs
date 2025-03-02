@@ -68,16 +68,16 @@ var rangosComIngredientesEndpoints = rangosComIdEndpoints.MapGroup("/ingrediente
 
 rangosEndpoints.MapGet("", RangosHandlers.GetRangosAsync);
 
-rangosEndpoints.MapPost("", RangosHandlers.PostRangoAsync);
+rangosEndpoints.MapPost("", RangosHandlers.CreateRangoAsync);
 
 rangosComIdEndpoints.MapGet("", RangosHandlers.GetRangoById)
-                    .WithName("GetRangosById");
+                    .WithName("GetRangoById");
 
-rangosComIdEndpoints.MapPut("", RangosHandlers.PutRangoAsync);
+rangosComIdEndpoints.MapPut("", RangosHandlers.UpdateRangoAsync);
 
 rangosComIdEndpoints.MapDelete("", RangosHandlers.DeleteRangoAsync);
 
-rangosComIngredientesEndpoints.MapGet("", IngredientesHandlers.GetIngredientesByRangoId);
+rangosComIngredientesEndpoints.MapGet("", IngredientesHandlers.GetIngredientesByRangoIdAsync);
 
 
 app.Run();
