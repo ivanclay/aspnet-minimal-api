@@ -13,15 +13,24 @@ public static class RangosHandlers
     public static async Task<Results<NoContent, Ok<IEnumerable<RangoDTO>>>> GetRangosAsync
     (RangoDbContext context,
     IMapper mapper,
+    ILogger<RangoDTO> logger,
     [FromQuery(Name = "name")] string? rangoName)
     {
         var rangoEntity = await context
                             .Rangos
                             .Where(rango => rangoName == null || rango.Nome.ToLower().Contains(rangoName.ToLower()))
                             .ToListAsync();
+        
         if (rangoEntity == null || rangoEntity.Count <= 0)
+        {
+            logger.LogInformation($"Rango não encontrado. Parâmetro: { rangoName }");
             return TypedResults.NoContent();
-        return TypedResults.Ok(mapper.Map<IEnumerable<RangoDTO>>(rangoEntity));
+        }
+        else
+        {
+            logger.LogInformation($"Rango { rangoName } encontrado.");
+            return TypedResults.Ok(mapper.Map<IEnumerable<RangoDTO>>(rangoEntity));
+        }
     }
 
     public static async Task<CreatedAtRoute<RangoDTO>> CreateRangoAsync(
