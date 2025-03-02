@@ -3,6 +3,7 @@ using Microsoft.AspNetCore.Http.HttpResults;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using RangoAgil.API.DbContexts;
+using RangoAgil.API.Entities;
 using RangoAgil.API.Models;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -55,7 +56,8 @@ app.MapGet("/rango", async (
     [FromHeader(Name = "RangoId")] int id) =>
 {
     return mapper.Map<RangoDTO>(await context.Rangos.FirstOrDefaultAsync(rango => rango.Id == id));
-});
+})
+    .WithName("GetRangoById");
 
 app.MapGet("/rango/{rangoId:int}/ingredientes", async 
     (RangoDbContext context,
@@ -67,5 +69,47 @@ app.MapGet("/rango/{rangoId:int}/ingredientes", async
                     .Include(rango => rango.Ingredientes)
                     .FirstOrDefaultAsync(rango => rango.Id == rangoId))?.Ingredientes);
 });
+
+//app.MapPost("/rango", async (
+//    RangoDbContext context,
+//    IMapper mapper,
+//    [FromBody] RangoCreateDTO rangoCreateDTO,
+//    LinkGenerator linkGenerator,
+//    HttpContext httpContext) =>
+//{
+//    var rangoEntity = mapper.Map<Rango>(rangoCreateDTO);
+//    context.Rangos.Add(rangoEntity);
+//    await context.SaveChangesAsync();
+
+//    var rangoReturn = mapper.Map<RangoDTO>(rangoEntity);
+
+//    var linkToCreatedReturn = linkGenerator.GetUriByName(
+//        httpContext,
+//        "GetRangoById",
+//        new { id = rangoReturn.Id }
+//        );
+
+//    return TypedResults.Created(
+//        linkToCreatedReturn,
+//        rangoReturn);
+//});
+
+app.MapPost("/rango", async Task<CreatedAtRoute<RangoDTO>> (
+    RangoDbContext context,
+    IMapper mapper,
+    [FromBody] RangoCreateDTO rangoCreateDTO) =>
+{
+    var rangoEntity = mapper.Map<Rango>(rangoCreateDTO);
+    context.Rangos.Add(rangoEntity);
+    await context.SaveChangesAsync();
+
+    var rangoReturn = mapper.Map<RangoDTO>(rangoEntity);
+
+    return TypedResults.CreatedAtRoute(
+                            rangoReturn,
+                            "GetRangoById",
+                            new { id = rangoReturn.Id });
+});
+
 
 app.Run();
