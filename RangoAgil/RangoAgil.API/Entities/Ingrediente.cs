@@ -3,24 +3,24 @@ using System.Diagnostics.CodeAnalysis;
 
 namespace RangoAgil.API.Entities;
 
-public class Ingredientes
+public class Ingrediente
 {
     [Key]
     public int Id { get; set; }
     
     [Required]
     [MaxLength(200)]
-    public required string Nome { get; set; };
+    public required string Nome { get; set; }
 
     public ICollection<Rango> Rangos { get; set; } = [];
 
-    public Ingredientes()
+    public Ingrediente()
     {
 
     }
 
     [SetsRequiredMembers]
-    public Ingredientes(int id, string nome)
+    public Ingrediente(int id, string nome)
     {
         Id = id;
         Nome = nome;
