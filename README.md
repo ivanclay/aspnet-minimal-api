@@ -18,5 +18,7 @@ Create Minimal APIs with .NET 8
 
 - [Microsoft.EntityFrameworkCore.Sqlite 8.0.1](https://www.nuget.org/packages/Microsoft.EntityFrameworkCore.Sqlite)
 - [Microsoft.EntityFrameworkCore.Tools 8.0.1](https://www.nuget.org/packages/Microsoft.EntityFrameworkCore.Tools)
+- [AutoMapper.Extensions.Microsoft.DependencyInjection 12.0.1](https://www.nuget.org/packages/AutoMapper.Extensions.Microsoft.DependencyInjection)
 - [SQLite](https://www.sqlite.org/download.html)
+
 
