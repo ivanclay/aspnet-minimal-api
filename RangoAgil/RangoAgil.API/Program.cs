@@ -17,58 +17,21 @@ var app = builder.Build();
 
 app.MapGet("/", () => "Bem vindo ao Rango's");
 
-app.MapGet("/rango/{id:int}", async (RangoDbContext context, int id) =>
-{
-    return await context.Rangos.FirstOrDefaultAsync(rango => rango.Id == id);
-});
+#region COMENTADOS
+//app.MapGet("/rangos/{id:int}", async (RangoDbContext context, int id) =>
+//{
+//    return await context.Rangos.FirstOrDefaultAsync(rango => rango.Id == id);
+//});
 
-app.MapGet("/rangoFromQuery", async (RangoDbContext context, [FromQuery(Name = "RangoId")] int id) =>
-{
-    return await context.Rangos.FirstOrDefaultAsync(rango => rango.Id == id);
-});
+//app.MapGet("/rangosFromQuery", async (RangoDbContext context, [FromQuery(Name = "RangoId")] int id) =>
+//{
+//    return await context.Rangos.FirstOrDefaultAsync(rango => rango.Id == id);
+//});
 
-app.MapGet("/rango/{nome}", async (RangoDbContext context, string nome) =>
-{
-    return await context.Rangos.FirstOrDefaultAsync(rango => rango.Nome == nome);
-});
-
-
-
-//using automapper
-
-app.MapGet("/rangos", async Task<Results<NoContent, Ok<IEnumerable<RangoDTO>>>>
-    (RangoDbContext context,
-    IMapper mapper,
-    [FromQuery(Name = "name")] string? rangoName) =>
-{
-    var rangoEntity = await context
-                        .Rangos
-                        .Where(rango => rangoName == null || rango.Nome.ToLower().Contains(rangoName.ToLower()))
-                        .ToListAsync();
-    if (rangoEntity == null || rangoEntity.Count <= 0)
-        return TypedResults.NoContent();
-    return TypedResults.Ok(mapper.Map<IEnumerable<RangoDTO>> (rangoEntity));
-});
-
-app.MapGet("/rango", async (
-    RangoDbContext context,
-    IMapper mapper,
-    [FromHeader(Name = "RangoId")] int id) =>
-{
-    return mapper.Map<RangoDTO>(await context.Rangos.FirstOrDefaultAsync(rango => rango.Id == id));
-})
-    .WithName("GetRangoById");
-
-app.MapGet("/rango/{rangoId:int}/ingredientes", async 
-    (RangoDbContext context,
-     IMapper mapper,
-    int rangoId) =>
-{
-    return  mapper.Map<IEnumerable<IngredienteDTO>>((await context
-                    .Rangos
-                    .Include(rango => rango.Ingredientes)
-                    .FirstOrDefaultAsync(rango => rango.Id == rangoId))?.Ingredientes);
-});
+//app.MapGet("/rango/{nome}", async (RangoDbContext context, string nome) =>
+//{
+//    return await context.Rangos.FirstOrDefaultAsync(rango => rango.Nome == nome);
+//});
 
 //app.MapPost("/rango", async (
 //    RangoDbContext context,
@@ -94,7 +57,29 @@ app.MapGet("/rango/{rangoId:int}/ingredientes", async
 //        rangoReturn);
 //});
 
-app.MapPost("/rango", async Task<CreatedAtRoute<RangoDTO>> (
+#endregion
+
+var rangosEndpoints = app.MapGroup("/rangos");
+var rangosComIdEndpoints = rangosEndpoints.MapGroup("/{rangoId:int}");
+var rangosComIngredientesEndpoints = rangosComIdEndpoints.MapGroup("/ingredientes");
+
+//using automapper
+
+rangosEndpoints.MapGet("", async Task<Results<NoContent, Ok<IEnumerable<RangoDTO>>>>
+    (RangoDbContext context,
+    IMapper mapper,
+    [FromQuery(Name = "name")] string? rangoName) =>
+{
+    var rangoEntity = await context
+                        .Rangos
+                        .Where(rango => rangoName == null || rango.Nome.ToLower().Contains(rangoName.ToLower()))
+                        .ToListAsync();
+    if (rangoEntity == null || rangoEntity.Count <= 0)
+        return TypedResults.NoContent();
+    return TypedResults.Ok(mapper.Map<IEnumerable<RangoDTO>> (rangoEntity));
+});
+
+rangosEndpoints.MapPost("", async Task<CreatedAtRoute<RangoDTO>> (
     RangoDbContext context,
     IMapper mapper,
     [FromBody] RangoCreateDTO rangoCreateDTO) =>
@@ -107,19 +92,28 @@ app.MapPost("/rango", async Task<CreatedAtRoute<RangoDTO>> (
 
     return TypedResults.CreatedAtRoute(
                             rangoReturn,
-                            "GetRangoById",
-                            new { id = rangoReturn.Id });
+                            "GetRangosById",
+                            new { rangoId = rangoReturn.Id });
 });
 
-app.MapPut("/rango/{id:int}", async Task<Results<NotFound, Ok>>  (
+rangosComIdEndpoints.MapGet("", async (
+    RangoDbContext context,
+    IMapper mapper,
+    [FromHeader(Name = "RangoId")] int id) =>
+{
+    return mapper.Map<RangoDTO>(await context.Rangos.FirstOrDefaultAsync(rango => rango.Id == id));
+})
+    .WithName("GetRangosById");
+
+rangosComIdEndpoints.MapPut("", async Task<Results<NotFound, Ok>>  (
     RangoDbContext context, 
     IMapper mapper,
-    int id,
+    int rangoId,
     [FromBody] RangoUpdateDTO rangoUpdateDTO) =>
 {
     var rangoEntity = await context
                     .Rangos
-                    .FirstOrDefaultAsync(rango => rango.Id == id);
+                    .FirstOrDefaultAsync(rango => rango.Id == rangoId);
     
     if (rangoEntity == null)
         return TypedResults.NotFound();
@@ -130,13 +124,13 @@ app.MapPut("/rango/{id:int}", async Task<Results<NotFound, Ok>>  (
     return TypedResults.Ok();
 });
 
-app.MapDelete("/rango/{id:int}", async Task<Results<NotFound, NoContent>> (
+rangosComIdEndpoints.MapDelete("", async Task<Results<NotFound, NoContent>> (
     RangoDbContext context,
-    int id) =>
+    int rangoId) =>
 {
     var rangoEntity = await context
                     .Rangos
-                    .FirstOrDefaultAsync(rango => rango.Id == id);
+                    .FirstOrDefaultAsync(rango => rango.Id == rangoId);
 
     if (rangoEntity == null)
         return TypedResults.NotFound();
@@ -146,5 +140,17 @@ app.MapDelete("/rango/{id:int}", async Task<Results<NotFound, NoContent>> (
 
     return TypedResults.NoContent();
 });
+
+rangosComIngredientesEndpoints.MapGet("", async
+    (RangoDbContext context,
+     IMapper mapper,
+    int rangoId) =>
+{
+    return mapper.Map<IEnumerable<IngredienteDTO>>((await context
+                    .Rangos
+                    .Include(rango => rango.Ingredientes)
+                    .FirstOrDefaultAsync(rango => rango.Id == rangoId))?.Ingredientes);
+});
+
 
 app.Run();
