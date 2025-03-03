@@ -22,6 +22,7 @@ Create Minimal APIs with .NET 8
 - [MiniValidation 0.9.2](https://www.nuget.org/packages/MiniValidation/0.9.2)
 - [Swashbuckle.AspNetCore 7.3.1](https://www.nuget.org/packages/Swashbuckle.AspNetCore/7.3.1)
 - [Microsoft.AspNetCore.OpenApi 8.0.3](https://www.nuget.org/packages/Microsoft.AspNetCore.OpenApi/8.0.13)
+- [Microsoft.AspNetCore.Authentication.JwtBearer 8.0.13](https://www.nuget.org/packages/Microsoft.AspNetCore.Authentication.JwtBearer/8.0.13)
 - [SQLite](https://www.sqlite.org/download.html)
 
 
