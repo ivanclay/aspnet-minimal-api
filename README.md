@@ -16,10 +16,12 @@ Create Minimal APIs with .NET 8
 
 ### Dependencies and Tools
 
-- [Microsoft.EntityFrameworkCore.Sqlite 8.0.1](https://www.nuget.org/packages/Microsoft.EntityFrameworkCore.Sqlite)
-- [Microsoft.EntityFrameworkCore.Tools 8.0.1](https://www.nuget.org/packages/Microsoft.EntityFrameworkCore.Tools)
-- [AutoMapper.Extensions.Microsoft.DependencyInjection 12.0.1](https://www.nuget.org/packages/AutoMapper.Extensions.Microsoft.DependencyInjection)
-- [MiniValidation 0.9.2](https://www.nuget.org/packages/MiniValidation)
+- [Microsoft.EntityFrameworkCore.Sqlite 8.0.1](https://www.nuget.org/packages/Microsoft.EntityFrameworkCore.Sqlite/8.0.1)
+- [Microsoft.EntityFrameworkCore.Tools 8.0.1](https://www.nuget.org/packages/Microsoft.EntityFrameworkCore.Tools/8.0.1)
+- [AutoMapper.Extensions.Microsoft.DependencyInjection 12.0.1](https://www.nuget.org/packages/AutoMapper.Extensions.Microsoft.DependencyInjection/12.0.1)
+- [MiniValidation 0.9.2](https://www.nuget.org/packages/MiniValidation/0.9.2)
+- [Swashbuckle.AspNetCore 7.3.1](https://www.nuget.org/packages/Swashbuckle.AspNetCore/7.3.1)
+- [Microsoft.AspNetCore.OpenApi 8.0.3](https://www.nuget.org/packages/Microsoft.AspNetCore.OpenApi/8.0.13)
 - [SQLite](https://www.sqlite.org/download.html)
 
 

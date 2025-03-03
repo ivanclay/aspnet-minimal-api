@@ -10,6 +10,7 @@ builder.Services.AddDbContext<RangoDbContext>(
 builder.Services.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies());
 
 builder.Services.AddProblemDetails();
+builder.Services.AddSwaggerGen();
 
 var app = builder.Build();
 
@@ -27,6 +28,10 @@ if (!app.Environment.IsDevelopment())
     //        });
     //});
 }
+
+app.UseHttpsRedirection();
+app.UseSwagger();
+app.UseSwaggerUI();
 
 app.MapGet("/", () => "Bem vindo ao Rango's");
 

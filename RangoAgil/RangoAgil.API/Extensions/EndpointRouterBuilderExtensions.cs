@@ -7,6 +7,15 @@ public static class EndpointRouterBuilderExtensions
 {
     public static void RegisterRangosEndpoints(this IEndpointRouteBuilder endpointRoutebuilder)
     {
+        endpointRoutebuilder
+            .MapGet("/pratos/{pratoId:int}", (int pratoId) => $"O prato {pratoId} é delicioso.")
+            .WithOpenApi(operation =>
+                    {
+                        operation.Deprecated = true;
+                        return operation;
+                    })
+            .WithSummary("This endpoint is deprecated.");
+
         var rangosEndpoints = endpointRoutebuilder.MapGroup("/rangos");
         var rangosComIdEndpoints = rangosEndpoints.MapGroup("/{rangoId:int}");
 
